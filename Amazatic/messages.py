@@ -1,0 +1,15 @@
+# *********** KEY CONSTANTS **************
+RESULTS = 'results'
+RESULT = 'result'
+MESSAGE = 'message'
+RESPONSE_DATA = 'response_data'
+STATE = 'state'
+DATA = 'data'
+ERROR = 'error'
+DUPLICATE = 'duplicate',
+ID_STRING = 'id_string'
+EMAIL = 'email'
+NAME = 'name'
+ID = 'id'
+SUCCESS = 'SUCCESS'
+EXCEPTION = 'EXCEPTION'
