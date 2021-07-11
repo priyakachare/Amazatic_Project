@@ -10,6 +10,26 @@ from Amazatic.common_functions import StandardResultsSetPagination, CustomAPIExc
 from Amazatic.messages import *
 from genres.models import Genres as GenresTbl, get_genre_by_id_string
 from genres.genres_serializers import GenresListSerializer, GenresSerializer
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+
+from movies.forms import GenreForm
+from .models import Genres
+from .genres_serializers import GenresListSerializer
+
+def GenrePage(request):    
+    if request.method == "POST":
+        form = GenreForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('full_name')
+            messages.success(request, f'Details for {username} Entered Successfully.')
+            return redirect('home')
+        else:
+            messages.warning(request, f'Error')
+    else:
+        form = GenreForm()
+    return render(request,'genres/genre.html', {'form': form})
 
 
 class GenresList(generics.ListAPIView):

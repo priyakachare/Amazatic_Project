@@ -8,8 +8,8 @@ from genres.models import Genres
 
 class Movies(models.Model):
     id_string = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    genre_id = models.BigIntegerField(null=True, blank=True)
-    artist_id = models.BigIntegerField(null=True, blank=True)
+    genre_id = models.ForeignKey(Genres,blank=True, null=True, on_delete=models.SET_NULL)
+    artist_id = models.ForeignKey(Artists,blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=200, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     created_by = models.BigIntegerField(null=True, blank=True)

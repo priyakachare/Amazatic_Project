@@ -11,6 +11,26 @@ from Amazatic.messages import *
 from artists.models import Artists as ArtistsTbl, get_artist_by_id_string
 from artists.artists_serializers import ArtistsListSerializer, ArtistsSerializer
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+
+from movies.forms import ArtistForm
+from .models import Artists
+
+def ArtistPage(request):    
+    if request.method == "POST":
+        form = ArtistForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('full_name')
+            messages.success(request, f'Details for {username} Entered Successfully.')
+            return redirect('home')
+        else:
+            messages.warning(request, f'Error')
+    else:
+        form = ArtistForm()
+    return render(request,'artists/artists.html', {'form': form})
+
 
 class ArtistsList(generics.ListAPIView):
     try:

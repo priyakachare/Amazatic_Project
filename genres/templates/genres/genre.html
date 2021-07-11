@@ -1,0 +1,33 @@
+{% extends "movies/base.html" %}
+{% block content %}
+    <div class="content">
+        <!--FORM-->
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Genre Details</legend>
+            </fieldset>
+            {% for field in form %}
+            <div class="form-group">
+                <div class="row form-row">
+                    <div class="col-12 col-md-4 mt-2">
+                        {{ field.label }}
+                    </div>
+                    <div class="col-12 col-md-8">
+                        {{ field }}
+                        {% for error in field.errors %}
+                            <span class="error-block" style="font-size: 18px; color: red">
+                                <p><small>{{ error }}</small></p>
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="form-group mt-2">
+                <button class="btn btn-outline-info" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock content %}
