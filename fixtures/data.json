@@ -1,0 +1,24 @@
+[
+  {
+    "pk": "1",
+    "model": "login.User",
+    "fields": {
+      "email": "admin@gmail.com",
+      "password": "pbkdf2_sha256$180000$uzNpPbxCk89A$RVkZS3CagGqM2rjACQprmRJE/Ok769BaaC0rWKdcFWw=",
+      "is_staff": "True",
+      "is_active": "True",
+      "is_superuser": "True"
+    }
+  },
+  {
+    "pk": "2",
+    "model": "login.User",
+    "fields": {
+      "email": "test@gmail.com",
+      "password": "pbkdf2_sha256$180000$uzNpPbxCk89A$RVkZS3CagGqM2rjACQprmRJE/Ok769BaaC0rWKdcFWw=",
+      "is_staff": "False",
+      "is_active": "True",
+      "is_superuser": "False"
+    }
+  }
+]

@@ -3,6 +3,24 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Movies
 from genres.models import Genres
 from artists.models import Artists
+from login.models import User
+
+class LoginForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ("email","password",)
+        labels = {
+            'email': _('email : '),  
+            'password': _('password : '),            
+        }
+        widgets = {
+            'email': forms.TextInput(
+                attrs={'placeholder': 'Enter email ', 'class': 'form-control'}),   
+            'password': forms.TextInput(
+                attrs={'placeholder': 'Enter password ', 'class': 'form-control'}),            
+            }
+
 
 class GenreForm(forms.ModelForm):
 

@@ -10,12 +10,6 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'movies/main.css' %}">
-
-    <!-- {% if title %}
-        <title>Django Demo </title>
-    {% else %}
-        <title>Django Demo</title>
-    {% endif %} -->
 </head>
 <body>
     <header class="site-header">
@@ -28,9 +22,13 @@
                     <div class="collapse navbar-collapse" id="navbarToggle">
                         <div class="navbar-nav mr-auto">
                         <a class="nav-item nav-link" style="padding-right: 30px" href="{% url 'home' %}">Home</a>
+                        {% if request.session.email == 'admin@gmail.com'%}
                         <a class="nav-item nav-link" style="padding-right: 30px" href="{% url 'movie-add' %}">Movies</a>
                         <a class="nav-item nav-link" style="padding-right: 30px" href="{% url 'genre-add' %}">Genres</a>
                         <a class="nav-item nav-link" style="padding-right: 30px" href="{% url 'artist-add' %}">Artists</a>
+                        
+                        {% endif %}
+                        <a class="nav-item nav-link" style="padding-left: 800px" href="{% url 'LogOutPage' %}">Logout</a>
                         <div class="navbar-nav mr-auto">
                     </div>
                 </div>
@@ -40,13 +38,6 @@
     <main role="main" class="container">
         <div class="row">
             <div class="col-md-8">
-                <!-- {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %} -->
 
                 {% block content %}{% endblock %}
             </div>

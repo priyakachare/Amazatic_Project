@@ -18,19 +18,21 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.forms import UserCreationForm
 from rest_framework import viewsets, permissions
+
 from .forms import MovieForm
 from .models import Movies
 from .movies_serializers import MoviesListSerializer
+from django.contrib.auth.decorators import login_required
+from login.decorators import unauthonticated_user, allowed_users, admin_only
 
-class HomePage(APIView):
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'movies/home.html'
+# @admin_only
+def HomePage(request):
+    queryset = MoviesTbl.objects.all()
+    return render(request,'movies/home.html', {'movies': queryset})
 
-    def get(self, request):
-        queryset = MoviesTbl.objects.all()
-        return Response({'movies': queryset}) 
     
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['Admin','User'])
 def MoviePage(request):    
     if request.method == "POST":
         form = MovieForm(request.POST)
@@ -38,32 +40,13 @@ def MoviePage(request):
             form.save()
             username = form.cleaned_data.get('full_name')
             messages.success(request, f'Details for {username} Entered Successfully.')
-            return redirect('demo-home')
+            return redirect('home')
         else:
             messages.warning(request, f'Error')
     else:
         form = MovieForm()
     return render(request,'movies/movie.html', {'form': form})
 
-    
-
-class MoviesDetail(APIView):
-
-    # renderer_classes = [TemplateHTMLRenderer]
-    # template_name = 'movies/movie.html'
-
-    # def get(self, request, pk):
-    #     profile = get_object_or_404(Profile, pk=pk)
-    #     serializer = ProfileSerializer(profile)
-    #     return Response({'serializer': serializer, 'profile': profile})
-
-    def post(self, request, pk):
-        movie = get_object_or_404(MoviesTbl, pk=pk)
-        serializer = MoviesSerializer(movie, data=request.data)
-        if not serializer.is_valid():
-            return Response({'serializer': serializer, 'profile': movie})
-        serializer.save()
-        return redirect(' ')
 
 class MoviesList(generics.ListAPIView):
     try:
@@ -80,81 +63,80 @@ class MoviesList(generics.ListAPIView):
     except Exception as e:
     	raise e
 
+class Movies(GenericAPIView):
 
-# class Movies(GenericAPIView):
-
-#     def post(self, request):
-#         try:
-#             serializer = MoviesSerializer(data=request.data)
-#             if serializer.is_valid(raise_exception=True):
-#                 movie_obj = serializer.create(serializer.validated_data)
-#                 view_serializer = MoviesListSerializer(instance=movie_obj, context={'request': request})
-#                 return Response({
-#                     STATE: SUCCESS,
-#                     RESULTS: view_serializer.data,
-#                 }, status=status.HTTP_201_CREATED)
-#             else:
-#                 return Response({
-#                     STATE: ERROR,
-#                     RESULTS: list(serializer.errors.values())[0][0],
-#                 }, status=status.HTTP_400_BAD_REQUEST)
-#         except Exception as e:
-#             return Response({
-#                 STATE: EXCEPTION,
-#                 RESULTS: str(e),
-#             }, status=401)
-
+    def post(self, request):
+        try:
+            serializer = MoviesSerializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                movie_obj = serializer.create(serializer.validated_data)
+                view_serializer = MoviesListSerializer(instance=movie_obj, context={'request': request})
+                return Response({
+                    STATE: SUCCESS,
+                    RESULTS: view_serializer.data,
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response({
+                    STATE: ERROR,
+                    RESULTS: list(serializer.errors.values())[0][0],
+                }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({
+                STATE: EXCEPTION,
+                RESULTS: str(e),
+            }, status=401)
 
 
-# class MoviesDetail(GenericAPIView):
+@login_required(login_url='login')
+class MoviesDetail(GenericAPIView):
 
-#     def get(self, request, id_string):
-#         try:
-#             movie_obj = get_movie_by_id_string(id_string)
-#             if movie_obj:
-#                 serializer = MoviesListSerializer(instance=movie_obj, context={'request': request})
-#                 return Response({
-#                     STATE: SUCCESS,
-#                     RESULTS: serializer.data,
-#                 }, status=status.HTTP_200_OK)
-#             else:
-#                 return Response({
-#                     STATE: ERROR,
-#                 }, status=status.HTTP_404_NOT_FOUND)
-#         except Exception as e:
-#             return Response({
-#                 STATE: EXCEPTION,
-#                 RESULTS: str(e),
-#             }, status=404)
+    def get(self, request, id_string):
+        try:
+            movie_obj = get_movie_by_id_string(id_string)
+            if movie_obj:
+                serializer = MoviesListSerializer(instance=movie_obj, context={'request': request})
+                return Response({
+                    STATE: SUCCESS,
+                    RESULTS: serializer.data,
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    STATE: ERROR,
+                }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                STATE: EXCEPTION,
+                RESULTS: str(e),
+            }, status=404)
 
 
-#     def put(self, request, id_string):
-#         try:
-#             movie_obj = get_movie_by_id_string(id_string)
-#             if movie_obj:
-#                 serializer = MoviesSerializer(data=request.data)
-#                 if serializer.is_valid(raise_exception=False):
-#                     movie_obj = serializer.update(movie_obj, serializer.validated_data)
-#                     view_serializer = MoviesListSerializer(instance=movie_obj,
-#                                                             context={'request': request})
-#                     return Response({
-#                         STATE: SUCCESS,
-#                         RESULTS: view_serializer.data,
-#                     }, status=status.HTTP_200_OK)
-#                 else:
-#                     return Response({
-#                         STATE: ERROR,
-#                         RESULTS: list(serializer.errors.values())[0][0],
-#                     }, status=status.HTTP_400_BAD_REQUEST)
-#             else:
-#                 return Response({
-#                     STATE: ERROR,
-#                 }, status=status.HTTP_404_NOT_FOUND)
-#         except Exception as e:
-#             return Response({
-#                 STATE: EXCEPTION,
-#                 RESULTS: str(e),
-#             }, status=404)
+    def put(self, request, id_string):
+        try:
+            movie_obj = get_movie_by_id_string(id_string)
+            if movie_obj:
+                serializer = MoviesSerializer(data=request.data)
+                if serializer.is_valid(raise_exception=False):
+                    movie_obj = serializer.update(movie_obj, serializer.validated_data)
+                    view_serializer = MoviesListSerializer(instance=movie_obj,
+                                                            context={'request': request})
+                    return Response({
+                        STATE: SUCCESS,
+                        RESULTS: view_serializer.data,
+                    }, status=status.HTTP_200_OK)
+                else:
+                    return Response({
+                        STATE: ERROR,
+                        RESULTS: list(serializer.errors.values())[0][0],
+                    }, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({
+                    STATE: ERROR,
+                }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                STATE: EXCEPTION,
+                RESULTS: str(e),
+            }, status=404)
 
 	    
 

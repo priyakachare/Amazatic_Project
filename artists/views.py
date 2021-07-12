@@ -16,7 +16,10 @@ from django.contrib import messages
 
 from movies.forms import ArtistForm
 from .models import Artists
+from django.contrib.auth.decorators import login_required
 
+
+@login_required(login_url='login')
 def ArtistPage(request):    
     if request.method == "POST":
         form = ArtistForm(request.POST)
@@ -70,7 +73,6 @@ class Artists(GenericAPIView):
                 STATE: EXCEPTION,
                 RESULTS: str(e),
             }, status=401)
-
 
 
 class ArtistDetail(GenericAPIView):

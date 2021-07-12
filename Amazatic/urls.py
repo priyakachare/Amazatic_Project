@@ -17,18 +17,19 @@ from django.contrib import admin
 from django.urls import path
 from artists.views import ArtistsList, Artists, ArtistDetail, ArtistPage
 from genres.views import GenresList, Genres, GenresDetail, GenrePage
-from movies.views import MoviesList, MoviesDetail, HomePage, MoviesDetail, MoviePage
-from login.views import LoginPage
+from movies.views import MoviesList, MoviesDetail, HomePage, MoviePage, Movies
+from login.views import LoginPage, LogOut
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('login', LoginPage, name="LoginPage"),
+    path('logout', LogOut, name="LogOutPage"),
     path('movie-add',MoviePage,name="movie-add"),
     path('genre-add',GenrePage, name="genre-add"),
     path('artist-add',ArtistPage, name="artist-add"),
-    path('', HomePage.as_view(), name="home"),
-    # path('movie-add',MoviesDetail.as_view(),name="movie-add"),
+    path('home', HomePage, name="home"),
+
 
     # URLS for Artists
     path('artists/list',ArtistsList.as_view(), name="list_of_artists"),
@@ -41,7 +42,7 @@ urlpatterns = [
     path('genres/<uuid:id_string>',GenresDetail.as_view(), name="get_genres"),
 
     # URLS for Movies
-    # path('movies/list',MoviesList.as_view(), name="list_of_movies"),
-    # path('movies',Movies.as_view(), name="add_movies"),
+    path('movies/list',MoviesList.as_view(), name="list_of_movies"),
+    path('movies',Movies.as_view(), name="add_movies"),
     # path('movies/<uuid:id_string>',MoviesDetail.as_view(), name="get_movies")
 ]

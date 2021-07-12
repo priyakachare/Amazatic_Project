@@ -16,7 +16,10 @@ from django.contrib import messages
 from movies.forms import GenreForm
 from .models import Genres
 from .genres_serializers import GenresListSerializer
+from django.contrib.auth.decorators import login_required
 
+
+@login_required(login_url='login')
 def GenrePage(request):    
     if request.method == "POST":
         form = GenreForm(request.POST)
@@ -47,7 +50,6 @@ class GenresList(generics.ListAPIView):
     except Exception as e:
     	raise e
 
-
 class Genres(GenericAPIView):
 
     def post(self, request):
@@ -70,7 +72,6 @@ class Genres(GenericAPIView):
                 STATE: EXCEPTION,
                 RESULTS: str(e),
             }, status=401)
-
 
 
 class GenresDetail(GenericAPIView):
