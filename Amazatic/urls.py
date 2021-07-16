@@ -23,7 +23,7 @@ from login.views import LoginPage, LogOut
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('login', LoginPage, name="LoginPage"),
+    path('', LoginPage, name="LoginPage"),
     path('logout', LogOut, name="LogOutPage"),
     path('movie-add',MoviePage,name="movie-add"),
     path('genre-add',GenrePage, name="genre-add"),
